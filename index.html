@@ -1,43 +1,108 @@
-<!-- Avatar Selection -->
-<div style="margin: 2rem 0; padding: 0 1rem;">
-  <h3 style="color:#a5b4fc; margin-bottom: 1.5rem; text-align: center;">Choose Your Guide</h3>
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 600px; margin: 0 auto;">
-    
-    <div id="avatar-remy" onclick="selectAvatar('remy')" style="cursor:pointer; padding: 1.25rem 0.75rem; border-radius: 0.8rem; border: 2px solid transparent; text-align:center; transition: all 0.2s ease; background: rgba(30,41,59,0.5);">
-      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🦝</div>
-      <div style="font-weight: 600; color: #e0e7ff;">Remy</div>
-      <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem;">The Heart</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw — Choose Your Guide</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+        body {
+            background: #121826;
+            color: #e0e7ff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+        h3 {
+            color: #8ba4fc;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.25rem;
+        }
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            max-width: 600px;
+            width: 100%;
+        }
+        .avatar-card {
+            cursor: pointer;
+            padding: 1.25rem 0.75rem;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            background: rgba(30, 41, 59, 0.5);
+            transition: all 0.25s ease;
+            text-align: center;
+        }
+        .avatar-card:hover {
+            background: rgba(51, 65, 85, 0.6);
+            transform: translateY(-2px);
+        }
+        .avatar-card.selected {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.15);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.25);
+        }
+        .avatar-emoji { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .avatar-name { font-weight: 600; color: #e0e7ff; margin-bottom: 0.25rem; }
+        .avatar-role { font-size: 0.8rem; color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+<h3>Choose Your Guide</h3>
+
+<div class="avatar-grid">
+    <!-- Remy -->
+    <div id="avatar-remy" class="avatar-card" onclick="selectAvatar('remy')">
+        <div class="avatar-emoji">🦝</div>
+        <div class="avatar-name">Remy</div>
+        <div class="avatar-role">The Heart</div>
     </div>
 
-    <div id="avatar-orion" onclick="selectAvatar('orion')" style="cursor:pointer; padding: 1.25rem 0.75rem; border-radius: 0.8rem; border: 2px solid transparent; text-align:center; transition: all 0.2s ease; background: rgba(30,41,59,0.5);">
-      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👨‍🚀</div>
-      <div style="font-weight: 600; color: #e0e7ff;">Orion</div>
-      <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem;">Explorer</div>
+    <!-- Orion -->
+    <div id="avatar-orion" class="avatar-card" onclick="selectAvatar('orion')">
+        <div class="avatar-emoji">👨‍🚀</div>
+        <div class="avatar-name">Orion</div>
+        <div class="avatar-role">Explorer</div>
     </div>
 
-    <div id="avatar-nova" onclick="selectAvatar('nova')" style="cursor:pointer; padding: 1.25rem 0.75rem; border-radius: 0.8rem; border: 2px solid transparent; text-align:center; transition: all 0.2s ease; background: rgba(30,41,59,0.5);">
-      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👩‍🔬</div>
-      <div style="font-weight: 600; color: #e0e7ff;">Nova</div>
-      <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem;">Innovator</div>
+    <!-- Nova -->
+    <div id="avatar-nova" class="avatar-card" onclick="selectAvatar('nova')">
+        <div class="avatar-emoji">👩‍🔬</div>
+        <div class="avatar-name">Nova</div>
+        <div class="avatar-role">Innovator</div>
     </div>
-
-  </div>
 </div>
 
 <script>
+const AVATARS = ['remy', 'orion', 'nova'];
+
 function selectAvatar(name) {
-  ['remy','orion','nova'].forEach(id => {
-    const el = document.getElementById('avatar-'+id);
-    el.style.borderColor = 'transparent';
-    el.style.background = 'rgba(30,41,59,0.5)';
-  });
-  const selected = document.getElementById('avatar-'+name);
-  selected.style.borderColor = '#8b5cf6';
-  selected.style.background = 'rgba(139,92,246,0.2)';
-  localStorage.setItem('selectedAvatar', name);
+    // Clear all
+    AVATARS.forEach(id => {
+        const el = document.getElementById(`avatar-${id}`);
+        if (el) el.classList.remove('selected');
+    });
+    // Highlight selected
+    const selected = document.getElementById(`avatar-${name}`);
+    if (selected) selected.classList.add('selected');
+    // Save preference
+    localStorage.setItem('selectedAvatar', name);
+    console.log('Avatar selected:', name); // Debug
 }
-window.onload = function() {
-  const saved = localStorage.getItem('selectedAvatar');
-  if(saved) selectAvatar(saved);
-};
+
+// Load saved on page open
+window.addEventListener('load', () => {
+    const saved = localStorage.getItem('selectedAvatar');
+    if (saved && AVATARS.includes(saved)) {
+        selectAvatar(saved);
+    }
+});
 </script>
+
+</body>
+</html>
