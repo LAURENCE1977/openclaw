@@ -1,24 +1,24 @@
 <!-- Avatar Selection -->
-<div style="margin: 2rem 0;">
-  <h3 style="color:#a5b4fc; margin-bottom:1rem;">Choose Your Guide</h3>
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+<div style="margin: 2rem 0; padding: 0 1rem;">
+  <h3 style="color:#a5b4fc; margin-bottom: 1.5rem; text-align: center;">Choose Your Guide</h3>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 600px; margin: 0 auto;">
     
-    <div id="avatar-remy" onclick="selectAvatar('remy')" style="cursor:pointer; padding:1rem; border-radius:.8rem; border:2px solid transparent; text-align:center; transition:all .2s;">
-      <div style="font-size:2.5rem; margin-bottom:.5rem;">🦝</div>
-      <div style="font-weight:600;">Remy</div>
-      <div style="font-size:.8rem; color:#94a3b8;">The Heart</div>
+    <div id="avatar-remy" onclick="selectAvatar('remy')" style="cursor:pointer; padding: 1.25rem 0.75rem; border-radius: 0.8rem; border: 2px solid transparent; text-align:center; transition: all 0.2s ease; background: rgba(30,41,59,0.5);">
+      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🦝</div>
+      <div style="font-weight: 600; color: #e0e7ff;">Remy</div>
+      <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem;">The Heart</div>
     </div>
 
-    <div id="avatar-orion" onclick="selectAvatar('orion')" style="cursor:pointer; padding:1rem; border-radius:.8rem; border:2px solid transparent; text-align:center; transition:all .2s;">
-      <div style="font-size:2.5rem; margin-bottom:.5rem;">👨‍🚀</div>
-      <div style="font-weight:600;">Orion</div>
-      <div style="font-size:.8rem; color:#94a3b8;">Explorer</div>
+    <div id="avatar-orion" onclick="selectAvatar('orion')" style="cursor:pointer; padding: 1.25rem 0.75rem; border-radius: 0.8rem; border: 2px solid transparent; text-align:center; transition: all 0.2s ease; background: rgba(30,41,59,0.5);">
+      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👨‍🚀</div>
+      <div style="font-weight: 600; color: #e0e7ff;">Orion</div>
+      <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem;">Explorer</div>
     </div>
 
-    <div id="avatar-nova" onclick="selectAvatar('nova')" style="cursor:pointer; padding:1rem; border-radius:.8rem; border:2px solid transparent; text-align:center; transition:all .2s;">
-      <div style="font-size:2.5rem; margin-bottom:.5rem;">👩‍🔬</div>
-      <div style="font-weight:600;">Nova</div>
-      <div style="font-size:.8rem; color:#94a3b8;">Innovator</div>
+    <div id="avatar-nova" onclick="selectAvatar('nova')" style="cursor:pointer; padding: 1.25rem 0.75rem; border-radius: 0.8rem; border: 2px solid transparent; text-align:center; transition: all 0.2s ease; background: rgba(30,41,59,0.5);">
+      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👩‍🔬</div>
+      <div style="font-weight: 600; color: #e0e7ff;">Nova</div>
+      <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem;">Innovator</div>
     </div>
 
   </div>
@@ -26,18 +26,16 @@
 
 <script>
 function selectAvatar(name) {
-  // Clear all
   ['remy','orion','nova'].forEach(id => {
-    document.getElementById('avatar-'+id).style.borderColor = 'transparent';
-    document.getElementById('avatar-'+id).style.background = 'transparent';
+    const el = document.getElementById('avatar-'+id);
+    el.style.borderColor = 'transparent';
+    el.style.background = 'rgba(30,41,59,0.5)';
   });
-  // Highlight selected
-  document.getElementById('avatar-'+name).style.borderColor = '#8b5cf6';
-  document.getElementById('avatar-'+name).style.background = 'rgba(139,92,246,0.15)';
-  // Save
+  const selected = document.getElementById('avatar-'+name);
+  selected.style.borderColor = '#8b5cf6';
+  selected.style.background = 'rgba(139,92,246,0.2)';
   localStorage.setItem('selectedAvatar', name);
 }
-// Load saved on page open
 window.onload = function() {
   const saved = localStorage.getItem('selectedAvatar');
   if(saved) selectAvatar(saved);
