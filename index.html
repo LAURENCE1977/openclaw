@@ -1,91 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Andromeda | Autonomous Open Platform</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        :root{
-            --space-dark:#050714;
-            --space-mid:#10142e;
-            --accent:#6366f1;
-            --accent-soft:#818cf8;
-            --text:#e6e7f2;
-            --text-dim:#9496b5;
-        }
-        body{
-            font-family:system-ui,-apple-system,sans-serif;
-            background:linear-gradient(160deg,var(--space-dark) 0%,var(--space-mid) 100%);
-            color:var(--text);
-            min-height:100vh;
-            line-height:1.6;
-        }
-        .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
-        header{text-align:center;padding:3rem 0 2rem}
-        h1{
-            font-size:clamp(2.2rem,6vw,3.5rem);
-            font-weight:800;
-            background:linear-gradient(90deg,var(--accent-soft),var(--accent));
-            -webkit-background-clip:text;
-            -webkit-text-fill-color:transparent;
-            background-clip:text;
-            margin-bottom:.5rem;
-        }
-        .tagline{font-size:1.15rem;color:var(--text-dim);max-width:600px;margin:0 auto}
-        .card{
-            background:rgba(99,102,241,.08);
-            border:1px solid rgba(99,102,241,.2);
-            border-radius:16px;
-            padding:2rem;
-            margin:1.5rem 0;
-            backdrop-filter:blur(10px);
-        }
-        h2{font-size:1.3rem;margin-bottom:1rem;color:var(--accent-soft)}
-        ul{list-style:none}
-        li{padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.08)}
-        li:last-child{border:none}
-        li::before{content:'';display:inline-block;width:8px;height:8px;
-            background:var(--accent);border-radius:50%;margin-right:.8rem}
-        .status{
-            display:inline-block;background:rgba(16,185,129,.15);color:#34d399;
-            padding:.4rem 1rem;border-radius:20px;font-weight:600;margin-top:1rem
-        }
-        footer{text-align:center;padding:2rem;color:var(--text-dim);font-size:.9rem}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Project Andromeda</h1>
-            <p class="tagline">Autonomous • Open-Source • Cross-Platform<br>Powered by OpenClaw 🦞 + MCP</p>
-            <span class="status">Initializing System Online</span>
-        </header>
-
-        <div class="card">
-            <h2>Core Mission</h2>
-            <p>Building a fully open, self-improving AI assistant framework — accessible from any device, no subscriptions, no locked doors.</p>
-        </div>
-
-        <div class="card">
-            <h2>Active Systems</h2>
-            <ul>
-                <li>🧠 MCP Protocol Integration — Universal API Connections</li>
-                <li>📱 Cross-Platform Web Interface — iPhone · iPad · Any Browser</li>
-                <li>🔐 Secure Key Management — Privacy-First Design</li>
-                <li>♻️ Autonomous Self-Upgrade — Open-Source & Community-Driven</li>
-                <li>🌐 MIT Licensed — Free Forever, No Hidden Costs</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h2>Current Status</h2>
-            <p>Foundation established. Core engine online. Frontend deployed. Next modules loading...</p>
-        </div>
-
-        <footer>
-            Project Andromeda © 2026 — Built on OpenClaw · Made with 💙 in the UK
-        </footer>
+<!-- Avatar Selection System -->
+<div style="margin:3rem 0; padding:2rem; background:rgba(99,102,241,.08); border:1px solid rgba(99,102,241,.2); border-radius:1rem;">
+  <h3 style="text-align:center; margin-bottom:1.5rem;">Choose Your Avatar</h3>
+  <p style="text-align:center; color:#a5b4fc; margin-bottom:1rem;">Select who represents you in Project Andromeda</p>
+  
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:1rem;">
+    <div id="avatar-remy" onclick="selectAvatar('remy')" style="cursor:pointer; padding:1rem; border-radius:.8rem; border:2px solid transparent; text-align:center; transition:all .2s;">
+      <div style="font-size:2.5rem; margin-bottom:.5rem;">🤖</div>
+      <div style="font-weight:600;">Remy</div>
+      <div style="font-size:.8rem; color:#94a3b8;">System Guide</div>
     </div>
-</body>
-</html>
+  </div>
+</div>
+
+<script>
+function selectAvatar(name) {
+  document.querySelectorAll('[id^="avatar-"]').forEach(el => {
+    el.style.borderColor = 'transparent';
+    el.style.background = 'transparent';
+  });
+  const selected = document.getElementById('avatar-' + name);
+  selected.style.borderColor = '#6366f1';
+  selected.style.background = 'rgba(99,102,241,.15)';
+  localStorage.setItem('andromeda_avatar', name);
+}
+window.onload = function() {
+  const saved = localStorage.getItem('andromeda_avatar');
+  if (saved) selectAvatar(saved);
+};
+</script>
