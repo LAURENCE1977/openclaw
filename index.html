@@ -52,7 +52,6 @@
         .avatar-name { font-weight: 600; font-size: 1.1rem; color: #e0e7ff; margin-bottom: 0.3rem; }
         .avatar-role { font-size: 0.85rem; color: #94a3b8; }
 
-        /* Chat Area */
         .chat-container {
             width: 100%;
             max-width: 600px;
@@ -136,9 +135,7 @@
 </div>
 
 <div class="chat-container">
-    <div class="chat-messages" id="chat-messages">
-        <!-- Welcome message loads here -->
-    </div>
+    <div class="chat-messages" id="chat-messages"></div>
     <div class="chat-input-row">
         <input type="text" id="chat-input" placeholder="Ask your guide anything..." autocomplete="off">
         <button id="send-btn">Send</button>
@@ -168,14 +165,11 @@ const PERSONAS = {
 };
 
 function selectAvatar(name) {
-    AVATARS.forEach(id => {
-        document.getElementById(`avatar-${id}`).classList.remove('selected');
-    });
+    AVATARS.forEach(id => document.getElementById(`avatar-${id}`).classList.remove('selected'));
     document.getElementById(`avatar-${name}`).classList.add('selected');
     selectedAvatar = name;
     localStorage.setItem('selectedAvatar', name);
     
-    // Clear & show welcome
     const messages = document.getElementById('chat-messages');
     messages.innerHTML = '';
     addMessage(PERSONAS[name].greeting, name);
@@ -192,7 +186,6 @@ function addMessage(text, sender) {
 
 function getSimulatedReply(userText) {
     if (!selectedAvatar) return "Pick your guide first 👆";
-    
     const p = PERSONAS[selectedAvatar];
     const lower = userText.toLowerCase();
     
@@ -224,20 +217,15 @@ function sendMessage() {
     input.value = '';
     
     setTimeout(() => {
-        const reply = getSimulatedReply(text);
-        addMessage(reply, selectedAvatar);
+        addMessage(getSimulatedReply(text), selectedAvatar);
     }, 600);
 }
 
-// Load saved preference
 window.addEventListener('load', () => {
     const saved = localStorage.getItem('selectedAvatar');
-    if (saved && AVATARS.includes(saved)) {
-        selectAvatar(saved);
-    }
+    if (saved && AVATARS.includes(saved)) selectAvatar(saved);
 });
 
-// Send handlers
 document.getElementById('send-btn').addEventListener('click', sendMessage);
 document.getElementById('chat-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') sendMessage();
