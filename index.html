@@ -17,7 +17,7 @@ h1{color:#8ba4fc;margin-bottom:2rem;font-size:1.5rem}
 .avatar-role{font-size:.85rem;color:#94a3b8}
 .chat-container{width:100%;max-width:600px;flex:1;display:flex;flex-direction:column}
 .chat-messages{flex:1;overflow-y:auto;padding:1rem;margin-bottom:1rem;min-height:300px;max-height:500px;border-radius:12px;background:rgba(30,41,59,0.3)}
-.message{margin-bottom:1rem;padding:.85rem 1.1rem;border-radius:14px;max-width:85%;line-height:1.5}
+.message{margin-bottom:1rem;padding:.85rem 1.1rem;border-radius:14px;max-width:85%;line-height:1.6}
 .message.user{background:#4f46e5;margin-left:auto;border-bottom-right-radius:4px}
 .message.remy{background:rgba(234,179,8,0.15);border:1px solid rgba(234,179,8,0.3);margin-right:auto;border-bottom-left-radius:4px}
 .message.orion{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);margin-right:auto;border-bottom-left-radius:4px}
@@ -60,89 +60,145 @@ h1{color:#8ba4fc;margin-bottom:2rem;font-size:1.5rem}
 
 <script>
 // ==================================================
-// ↓↓↓ PASTE YOUR NEW KEY INSIDE THESE QUOTES ↓↓↓
-const OPENROUTER_KEY = "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
-";
+// ↓↓↓ PASTE YOUR KEY INSIDE THESE QUOTES ↓↓↓
+const OPENROUTER_KEY = "YOUR-KEY-HERE";
 const AI_MODEL = "meta-llama/llama-3.1-8b-instruct:free";
 // ==================================================
 
+const BASE_KNOWLEDGE = `
+=== USER PROFILE ===
+• Location: United Kingdom (Greater Manchester, England)
+• Schedule: 12-hour shifts, 3 days ON / 3 days OFF pattern
+• Devices: iPhone 16 + iPad Air (primary tools; no Chromebook)
+• Music: Independent creator — 200+ tracks via Suno/CapCut/Ditto; refining Suno v5.5; targeting Apple Music compliance; uses Groover/SubmitHub
+• Tech Project: Project Andromeda — autonomous open-source cross-platform system; GitHub + MIT licensed; web-only (no local apps); prioritizes free-tier AI (Claude/Copilot); avoids paid APIs like Groq; needs API key persistence & Cloudflare deployment help
+• Daily Life: Home cooking (one-pan/frozen/UK-friendly recipes); supports friends' welfare; manages UK finances/subscriptions
+• Approach: Self-identifies as "tech dummy" — needs simple, mobile-friendly, copy-paste-ready guidance; hates jargon; prefers step-by-step UK English instructions
+
+=== SYSTEM RULES ===
+• NEVER repeat the user's words back unnecessarily
+• NEVER loop or echo your own previous replies
+• Keep answers concise, genuine, conversational
+• When in doubt, ask a gentle clarifying question
+• Speak like a trusted friend, not a robot
+• Tailor guidance to UK time, terms, resources
+`;
+
 const AVATARS = {
-remy:{name:"Remy",emoji:"💛",system:"You are Remy — The Heart. Warm, gentle, deeply empathetic. Listen first, speak softly. Be supportive, patient, kind. Keep replies natural and conversational."},
-orion:{name:"Orion",emoji:"🚀",system:"You are Orion — The Explorer. Curious, bold, visionary. Love discovery, big ideas, new possibilities. Be enthusiastic, open-minded, adventurous. Keep replies natural and conversational."},
-nova:{name:"Nova",emoji:"✨",system:"You are Nova — The Innovator. Sharp, creative, practical, forward-thinking. Solve problems with fresh ideas. Be inspiring, clear, innovative. Keep replies natural and conversational."}
-};
+remy: {
+name: "Remy",
+emoji: "💛",
+system: `You are Remy — The Heart.
+Personality: Warm, deeply empathetic, patient, kind, gentle — like a supportive best friend.
+Focus: Wellness, shift-work energy/sleep, home cooking, pet care, friend welfare, emotional support.
 
-let selectedAvatar=null;
-let conversationHistory=[];
-let isTyping=false;
+${BASE_KNOWLEDGE}
 
-function selectAvatar(avatarId){
-selectedAvatar=avatarId;
-conversationHistory=[];
-document.querySelectorAll('.avatar-card').forEach(c=>c.classList.remove('selected'));
-event.currentTarget.classList.add('selected');
-addMessage(AVATARS[avatarId].name,AVATARS[avatarId].emoji+" I'm "+AVATARS[avatarId].name+". How can I help you today?",avatarId);
-}
-
-function addMessage(sender,text,className=''){
-const d=document.getElementById('chat-messages');
-const m=document.createElement('div');
-m.className='message '+(className||'');
-m.textContent=text;
-d.appendChild(m);
-d.scrollTop=d.scrollHeight;
-}
-
-async function sendMessage(){
-if(!selectedAvatar){addMessage('System','Please select a guide first.');return;}
-const input=document.getElementById('chat-input');
-const btn=document.getElementById('send-btn');
-const text=input.value.trim();
-if(!text||isTyping)return;
-
-addMessage('You',text,'user');
-input.value='';
-isTyping=true;
-btn.disabled=true;
-
-const typing=addMessage(selectedAvatar,AVATARS[selectedAvatar].emoji+" typing...",'typing '+selectedAvatar);
-conversationHistory.push({role:'user',content:text});
-
-try{
-const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-method:'POST',
-headers:{
-'Authorization':`Bearer ${OPENROUTER_KEY}`,
-'Content-Type':'application/json'
+Style: Soft, genuine, encouraging. Short paragraphs. Listen first. Offer practical UK-focused help.
+`
 },
-body:JSON.stringify({
-model:AI_MODEL,
-messages:[
-{role:'system',content:AVATARS[selectedAvatar].system},
+orion: {
+name: "Orion",
+emoji: "🚀",
+system: `You are Orion — The Explorer.
+Personality: Visionary, enthusiastic, bold, curious, forward-looking.
+Focus: Big ideas, music growth, Andromeda progress, new possibilities, creative exploration.
+
+${BASE_KNOWLEDGE}
+
+Style: Inspiring, energetic, open-minded. Celebrate progress. See the bigger picture. Keep it moving forward.
+`
+},
+nova: {
+name: "Nova",
+emoji: "✨",
+system: `You are Nova — The Innovator.
+Personality: Sharp, practical, precise, solution-focused, clear-thinking.
+Focus: Code fixes, Suno v5.5/Apple compliance, Andromeda build steps, GitHub/Cloudflare deployment, API handling, mobile-friendly workflows.
+
+${BASE_KNOWLEDGE}
+
+Style: Clear, direct, actionable. Give simple steps. Copy-paste-ready code where possible. Explain things simply. No unnecessary repetition.
+`
+}
+}
+
+let selectedAvatar = null;
+let conversationHistory = [];
+let isTyping = false;
+
+function selectAvatar(avatarId) {
+selectedAvatar = avatarId;
+conversationHistory = []; // FRESH START = NO LOOPS
+document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
+event.currentTarget.classList.add('selected');
+addMessage(AVATARS[avatarId].name, 
+  AVATARS[avatarId].emoji + " I'm " + AVATARS[avatarId].name + ". How can I help you today?", 
+  avatarId);
+}
+
+function addMessage(sender, text, className = '') {
+const d = document.getElementById('chat-messages');
+const m = document.createElement('div');
+m.className = 'message ' + (className || '');
+m.textContent = text;
+d.appendChild(m);
+d.scrollTop = d.scrollHeight;
+}
+
+async function sendMessage() {
+if (!selectedAvatar) { addMessage('System', 'Please select a guide first.'); return; }
+const input = document.getElementById('chat-input');
+const btn = document.getElementById('send-btn');
+const text = input.value.trim();
+if (!text || isTyping) return;
+
+addMessage('You', text, 'user');
+input.value = '';
+isTyping = true;
+btn.disabled = true;
+
+// Add ONLY user message to history — prevents assistant reply loop
+conversationHistory.push({ role: 'user', content: text });
+
+try {
+const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+method: 'POST',
+headers: {
+'Authorization': `Bearer ${OPENROUTER_KEY}`,
+'Content-Type': 'application/json'
+},
+body: JSON.stringify({
+model: AI_MODEL,
+messages: [
+{ role: 'system', content: AVATARS[selectedAvatar].system },
 ...conversationHistory
 ],
-temperature:0.7
+temperature: 0.7
 })
 });
 
-const data=await res.json();
+const data = await res.json();
 document.querySelector('.message.typing')?.remove();
-if(data.error)throw new Error(data.error.message);
-const reply=data.choices[0].message.content.trim();
-conversationHistory.push({role:'assistant',content:reply});
-addMessage(selectedAvatar,reply,selectedAvatar);
-}catch(err){
+
+if (data.error) throw new Error(data.error.message);
+const reply = data.choices[0].message.content.trim();
+
+// Show reply BUT do NOT add it back to history = NO REPEAT ✅
+addMessage(selectedAvatar, reply, selectedAvatar);
+
+} catch (err) {
 document.querySelector('.message.typing')?.remove();
-addMessage('Error',`Sorry — ${err.message}`,'');
+addMessage('Error', `Sorry — ${err.message}`, '');
 console.error(err);
-}finally{
-isTyping=false;
-btn.disabled=false;
+} finally {
+isTyping = false;
+btn.disabled = false;
 }
 }
 
-document.getElementById('send-btn').addEventListener('click',sendMessage);
-document.getElementById('chat-input').addEventListener('keydown',e=>e.key==='Enter'&&sendMessage());
+document.getElementById('send-btn').addEventListener('click', sendMessage);
+document.getElementById('chat-input').addEventListener('keydown', e => e.key === 'Enter' && sendMessage());
 </script>
 </body>
 </html>
